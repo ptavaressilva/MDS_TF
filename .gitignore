@@ -1,8 +1,10 @@
 *.pkl
 /docs/
-/dataset/
+/dataset/*
 /env/local/
 pruebas.ipynb
+/outputs/*
+/checkpoints/*
 
 # Created by https://www.toptal.com/developers/gitignore/api/python,jupyternotebooks,macos
 # Edit at https://www.toptal.com/developers/gitignore?templates=python,jupyternotebooks,macos
