@@ -1,10 +1,12 @@
+# dataset files
 *.pkl
-/docs/
 /dataset/*
-/env/local/
-pruebas.ipynb
 /outputs/*
 /checkpoints/*
+# local files
+/docs/
+/env/local/
+pruebas.ipynb
 
 # Created by https://www.toptal.com/developers/gitignore/api/python,jupyternotebooks,macos
 # Edit at https://www.toptal.com/developers/gitignore?templates=python,jupyternotebooks,macos
