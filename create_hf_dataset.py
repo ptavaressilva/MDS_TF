@@ -71,13 +71,13 @@ def main(dataset_origin_path='dataset/photos',
         pickle.dump(df, open('checkpoints/valid.pkl', 'wb'))
 
     # crear listas separadas para train (80% de max_photos), test (10%)
-    # y validate (10%) en cada categoria
+    # y validation (10%) en cada categoria
 
     categorias = df.label.value_counts().index
 
     dataset = {'train': {},
                'test': {},
-               'validate': {}}
+               'validation': {}}
 
     for categoria in categorias:
         # 80% de max_photos
@@ -88,7 +88,7 @@ def main(dataset_origin_path='dataset/photos',
             {categoria: df.loc[df.label == categoria][0:slice_80]})
         dataset['test'].update(
             {categoria: df.loc[df.label == categoria][slice_80:slice_80+slice_10]})
-        dataset['validate'].update(
+        dataset['validation'].update(
             {categoria: df.loc[df.label == categoria][slice_80+slice_10:]})
 
     subset_max_photos = {  # número máximo de fotos de cada categorñia en el split
@@ -97,11 +97,11 @@ def main(dataset_origin_path='dataset/photos',
     }
     subset_max_photos.update({
         # las que quedan para sumar max_photos
-        'validate': max_photos - subset_max_photos['train'] - subset_max_photos['test']
+        'validation': max_photos - subset_max_photos['train'] - subset_max_photos['test']
     })
 
     # limitar los subsets a max_photos
-    for subset in ['train', 'test', 'validate']:
+    for subset in ['train', 'test', 'validation']:
         for categoria in categorias:
             # si hay demasiadas fotos, hacer resample
             if len(dataset[subset][categoria]) > subset_max_photos[subset]:
@@ -119,7 +119,7 @@ def main(dataset_origin_path='dataset/photos',
     os.mkdir(dataset_output_path)
     print('Carpeta {} creada'.format(dataset_output_path))
 
-    for subset in ['train', 'test', 'validate']:
+    for subset in ['train', 'test', 'validation']:
         os.mkdir(dataset_output_path + '/' + subset)
         print('Carpeta {} creada'.format(dataset_output_path + '/' + subset))
         for categoria in categorias:
@@ -134,7 +134,7 @@ def main(dataset_origin_path='dataset/photos',
 
     subset_max_photos.update({
         # las que quedan
-        'validate': max_photos - subset_max_photos['train'] - subset_max_photos['test']
+        'validation': max_photos - subset_max_photos['train'] - subset_max_photos['test']
     })
 
     pipeline = T.Compose([
@@ -143,7 +143,7 @@ def main(dataset_origin_path='dataset/photos',
     ])
 
     # copiar fotos seleccionadas para nuevo repo
-    for subset in ['train', 'test', 'validate']:
+    for subset in ['train', 'test', 'validation']:
         for categoria in categorias:
 
             # copiar archivos a las carpetas de destino
@@ -185,12 +185,12 @@ def main(dataset_origin_path='dataset/photos',
                 for img_name in df_base_images.photo_id:
                     original_image_path = dataset_origin_path + '/' + img_name + '.jpg'
                     new_image_path = dataset_output_path + '/' + subset + \
-                        '/' + categoria + '/' + img_name + '.jpg''_tr.jpg'
+                        '/' + categoria + '/' + img_name + '_tr{}.jpg'.format(contador)
                     with Image.open(original_image_path) as img:
                         augmented_image = pipeline(img=img)
                         augmented_image.save(new_image_path)
 
-                    new_img = pd.DataFrame(data={'photo_id': img_name+'_tr.jpg',
+                    new_img = pd.DataFrame(data={'photo_id': img_name+'_tr{}.jpg'.format(contador),
                                                 'label': df.loc[df.photo_id == img_name].label})
                     dataset[subset][categoria] = pd.concat(
                         [dataset[subset][categoria], new_img])
