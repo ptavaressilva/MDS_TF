@@ -1,7 +1,6 @@
-# from email.mime import image
 # import pickle
 # import pandas as pd
-# import os
+import os
 # from PIL import Image
 # from tqdm.notebook import trange, tqdm
 # import math
@@ -31,18 +30,65 @@ def create_or_empty(path):
 
 
 def main(dataset_origin_path='dataset/photos',
-         dataset_output_path='dataset/recortadas',
-         dataset_json_file='dataset/photo.json',
-         max_photos=100):
-    '''Crea una estructura de carpetas para un dataset de Hugging Face, con train, test, validate y fotos. Copia max_photos de cada categoría a esa carpeta (10% para test y validate).
+         dataset_output_path='dataset/yelp',
+         dataset_json_file='dataset/photos.json',
+         max_photos=0):
 
-    dataset_origin_path: carpeta en la que se encuentran las fotos originales.
+    '''Crea un repositorio de fotos con la estructura de carpetas requerida para un dataset de Hugging Face.
+    
+    Para más información:
+        create_hf_dataset -h
+        
+    --dataset_origin_path
+        Carpeta donde está el repositório de fotos. Por defecto "dataset/photos".
 
-    dataset_output_path: carpeta donde se volcarán las carpetas y las fotos.
+    --dataset_output_path
+        Raiz donde se generará el repositório con la estructura de Hugging Face (split/label/foto).\
+            Por defecto "dataset/yelp".
+        
+    --dataset_json_file
+        Fichero JSON con las categorías de las fotos. Por defecto "dataset/photos.json"
+        
+    --max_photos:
+        Número máximo de fotos de cada categoría a procesar. Omitir o cero para procesar todas.\
+            número de fotos en train (80%) + test (10%) + evaluate (10%) = max_pphotos'''
 
-    max_photos: número máximo de fotos de cada categoría en train. Se hará oversampling si no hay fotos suficientes.'''
+    parser = argparse.ArgumentParser("crear_split")
+    parser.add_argument(
+        "--dataset_origin_path", 
+        help="Carpeta donde está el repositório de fotos. Por defecto 'dataset/photos'.", 
+        type=str
+        )
+    parser.add_argument(
+        "--dataset_output_path", 
+        help="Raiz donde se generará el repositório con la estructura de Hugging Face (split/label/foto).\
+            Por defecto 'dataset/yelp'.", 
+        type=str
+        )
+    parser.add_argument(
+        "--dataset_json_file", 
+        help="Fichero JSON con las categorías de las fotos. Por defecto 'dataset/photos.json'", 
+        type=str
+        )
+    parser.add_argument(
+        "--max_photos", 
+        help="Número máximo de fotos de cada categoría a procesar. Omitir o cero para procesar todas.\
+            número de fotos en train (80%) + test (10%) + evaluate (10%) = max_pphotos", 
+        type=int
+        )
+    args = parser.parse_args()
+    
+    dataset_origin_path = args.dataset_origin_path if args.dataset_origin_path else 'dataset/photos' #por defecto
+
+    dataset_output_path = args.dataset_output_path if args.dataset_output_path else 'dataset/yelp' #por defecto
+
+    dataset_json_file = args.dataset_json_file if args.dataset_json_file else 'dataset/photos.json' #por defecto
+
+    max_photos = args.max_photos if args.max_photos else 0 #por defecto
 
     # 1 ##  Crear lista de todas las fotos validas que tienen label (photo_id y label)
+
+    
 
     # crear listas separadas para train (80% de fotos de cada categoria), test (10%) y validate (10%)
 
@@ -53,61 +99,7 @@ def main(dataset_origin_path='dataset/photos',
 
     # copiar archivos a las carpetas de destino
 
-    if max_photos > 0:  # procesar solo un sub-conjunto de las fotos
-        df_subset = pd.DataFrame([], columns=['photo_id',
-                                              'label',
-                                              'x_dim',
-                                              'y_dim',
-                                              'z_channels',
-                                              'pixels',
-                                              'drink',
-                                              'food',
-                                              'inside',
-                                              'menu',
-                                              'outside'])
-        total_photos = df.label.value_counts()
-        for label in total_photos.index:
-            # Hay muchas fotos. Preservar un subconjunto.
-            if total_photos[label] > max_photos:
-                df_subset = pd.concat([df_subset,
-                                       df.loc[df.label == label].sample(n=max_photos)])
-            else:  # Hay pocas fotos. Preservar todas.
-                df_subset = pd.concat([df_subset,
-                                       df.loc[df.label == label]])
-        df = df_subset
-        del(df_subset)
 
-    if not (os.path.exists(dataset_output_path) or os.path.isdir(dataset_output_path)):
-        # La carpeta dataset_output_path no existe. Crearla.
-        os.mkdir(dataset_output_path)
-
-    categories = df.label.value_counts().index
-    for category in categories:
-        create_or_empty('{}/{}'.format(dataset_output_path, category))
-
-    # redimensionar, recortar y guardar fotos
-
-    for img in tqdm(range(len(df)), desc='Photos cropped', miniters=len(df)//100):
-        im = Image.open(
-            '{}/{}.jpg'.format(dataset_photos_path, df.iloc[img].photo_id))
-
-        # redimensionar
-        if (df.iloc[img].y_dim < df.iloc[img].x_dim):  # imagen estrecha
-            width = int(photo_size)
-            height = math.floor(
-                photo_size * df.iloc[img].x_dim/df.iloc[img].y_dim)
-        else:  # imagen ancha
-            width = math.floor(
-                photo_size * df.iloc[img].y_dim/df.iloc[img].x_dim)
-            height = int(photo_size)
-
-        resized = T.Resize((height, width))(im)
-        cropped = T.CenterCrop(size=int(photo_size))(resized)
-
-        cropped.save('{}/{}/{}.png'.format(
-            dataset_output_path,
-            df.iloc[img].label,
-            df.iloc[img].photo_id))
 
 
 if __name__ == "__main__":
