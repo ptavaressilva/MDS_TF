@@ -80,6 +80,7 @@ def main(dataset_origin_path='dataset/photos',
                'validation': {}}
 
     for categoria in categorias:
+        print('Creando dataframes con slices para "{}" usando fotos originales'.format(categoria))
         # 80% de max_photos
         slice_80 = int(len(df.loc[df.label == categoria]) * 0.8)
         # 10% de max_photos
@@ -105,6 +106,7 @@ def main(dataset_origin_path='dataset/photos',
         for categoria in categorias:
             # si hay demasiadas fotos, hacer resample
             if len(dataset[subset][categoria]) > subset_max_photos[subset]:
+                print('Sampling de fotos de "{}/{}".'.format(subset, categoria))
                 dataset[subset][categoria] = dataset[subset][categoria].sample(n=subset_max_photos[subset],
                                                                                random_state=random_state,
                                                                                replace=False,  # max 1x cada foto
@@ -138,8 +140,9 @@ def main(dataset_origin_path='dataset/photos',
     })
 
     pipeline = T.Compose([
-        T.ColorJitter(brightness=.5, hue=.3),
-        T.RandomAffine(degrees=(30, 70), scale=(0.9, 1.1))
+        T.RandomRotation(degrees=(30, 70)),
+        T.RandomResizedCrop((224, 224)),
+        T.ColorJitter(brightness=.2, hue=.1)
     ])
 
     # copiar fotos seleccionadas para nuevo repo
