@@ -12,12 +12,12 @@ Análisis exploratório de las fotos y etiquetas
 ### CNN con toy dataset
 
 1. [Preparación de los datos](01_Preparación_flat_toy_dataset.ipynb)
-2. [Entrenamiento](04_CNN.ipynb)
+2. [Entrenamiento](04_CNN_toy.ipynb)
 
 ### CNN con dataset 5k
 
-1. [Preparación de los datos]()
-2. [Entrenamiento]()
+1. Preparación de los datos
+2. Entrenamiento
 
 ### ViT (&#129303; Hugging Face)
 
@@ -28,6 +28,8 @@ Análisis exploratório de las fotos y etiquetas
 
 1. [Preparación de los datos (toy y 5k)](02_crear_estructura_dataset_HF.ipynb)
 2. [Entrenamiento](04_tuneo_DeiT.ipynb) - &#9888; ver error en [Stack Overflow](https://stackoverflow.com/questions/73505595/forward-got-an-unexpected-keyword-argument-labels-while-training-huggin-fa)
+
+WIP = work in progress (trabajo en curso)
 
 ## Entorno
 Para usar Jupyter Notebook en un contenedor Docker (requiere Docker Desktop instalado en el host):
