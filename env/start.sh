@@ -7,4 +7,6 @@ docker run -it -p 8888:8888 -p 5000:5050 \
            ptavaressilva/datascience:v3 \
            jupyter notebook --no-browser --allow-root --ip 0.0.0.0
 
+# en WINDOWS los path para -v son //C/Users/USERNAME/...
+
 # docker exec -it ds-TF_MDS /bin/bash

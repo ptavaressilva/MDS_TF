@@ -31,6 +31,11 @@ Análisis exploratório de las fotos y etiquetas
 
 WIP = work in progress (trabajo en curso)
 
+## MLflow Tracking
+
+1. [Instrucciones](MAN_MLflow.ipynb)
+2. [Ejemplo con CNN / Keras](04_CNN_toy_MLflow.ipynb)
+
 ## Entorno
 Para usar Jupyter Notebook en un contenedor Docker (requiere Docker Desktop instalado en el host):
 1. Cear archivo 'env/.env' con
@@ -41,7 +46,18 @@ TF_MDS_repo1_cont=/path/en/el/contenedor
 TF_MDS_repo2_host=/otro/path/en/mi/ordenador
 TF_MDS_repo2_cont=/otro/path/en/el/contenedor
 ```
+**WINDOWS**: si el host es Windows los path tienen el formato //C/Users/USERNAME/...
 
 2. Ejecutar script `env/start.sh`
 3. Pegar en el nevegador la URL presentada en el terminal (http://127.0.0.1:8888/...)
 
+Configurar Git:
+1. Abrir terminal del contenedor con `docker exec -it ds-TF_MDS /bin/bash`
+2. Configurar usar con `git config --global user.email "you@example.com"`y `git config --global user.name "Your Name"`
+
+Hacer login en GitHub:
+1. usar comando `gh auth login`
+2. "Authenticate Git with your GitHub credentials?" = "Yes"
+3. Login with a web browser
+4. Abrir un navegador e ir a "https://github.com/login/device"
+5. Pegar en el navegador el código (XXXX-XXXX) que aparece en el terminal.
