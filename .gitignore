@@ -3,11 +3,15 @@
 /dataset/*
 /tunning/*
 /checkpoints/*
-/docs/
+# local docs
+/docs/*
 /env/local/
 pruebas.ipynb
+# transformers
 /outputs/*
 /deit*/
+# Mlflow
+/mlruns/*
 
 # Created by https://www.toptal.com/developers/gitignore/api/python,jupyternotebooks,macos
 # Edit at https://www.toptal.com/developers/gitignore?templates=python,jupyternotebooks,macos
